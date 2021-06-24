@@ -3,6 +3,9 @@
 // Room is an abstraction of a chat channel
 const Room = require('./Room');
 
+// Joke is an abstraction of a joke generator
+const getJoke = require('./Joke');
+
 /** ChatUser is a individual connection from client -> server to chat. */
 
 class ChatUser {
@@ -47,10 +50,20 @@ class ChatUser {
     });
   }
 
+  async handleJoke() {
+    const joke = await getJoke();
+    const data = JSON.stringify({
+      name: this.name,
+      type: 'chat',
+      text: joke})
+    this.send(data);
+  }
+
   /** Handle messages from client:
    *
    * - {type: "join", name: username} : join
    * - {type: "chat", text: msg }     : chat
+   * - {type: "joke", text: }         : joke
    */
 
   handleMessage(jsonData) {
@@ -58,6 +71,7 @@ class ChatUser {
 
     if (msg.type === 'join') this.handleJoin(msg.name);
     else if (msg.type === 'chat') this.handleChat(msg.text);
+    else if (msg.type === 'joke') this.handleJoke();
     else throw new Error(`bad message: ${msg.type}`);
   }
 
