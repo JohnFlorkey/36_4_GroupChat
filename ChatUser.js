@@ -50,6 +50,11 @@ class ChatUser {
     });
   }
 
+  handleCommand(text) {
+    if (text === "/joke") this.handleJoke();
+    else if (text === "/members") this.handleMembers();
+  }
+
   async handleJoke() {
     const joke = await getJoke();
     const data = JSON.stringify({
@@ -59,11 +64,21 @@ class ChatUser {
     this.send(data);
   }
 
+  handleMembers() {
+    const members = this.room.getMembers();
+    const data = JSON.stringify({
+      name: this.name,
+      type: "chat",
+      text: members
+    });
+    this.send(data);
+  }
+
   /** Handle messages from client:
    *
    * - {type: "join", name: username} : join
    * - {type: "chat", text: msg }     : chat
-   * - {type: "joke", text: }         : joke
+   * - {type: "command", text: command name}         : command
    */
 
   handleMessage(jsonData) {
@@ -71,7 +86,7 @@ class ChatUser {
 
     if (msg.type === 'join') this.handleJoin(msg.name);
     else if (msg.type === 'chat') this.handleChat(msg.text);
-    else if (msg.type === 'joke') this.handleJoke();
+    else if (msg.type === 'command') this.handleCommand(msg.text);
     else throw new Error(`bad message: ${msg.type}`);
   }
 

@@ -63,8 +63,8 @@ $('form').submit(function (evt) {
 
   let data = '';
 
-  if ($("#m").val() === "/joke") {
-    data = {type: "joke", text: ""};
+  if ($("#m").val()[0] === "/") {
+    data = {type: "command", text: $("#m").val()};
   } else {
     data = {type: "chat", text: $("#m").val()};
   }

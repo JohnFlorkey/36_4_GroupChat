@@ -32,6 +32,14 @@ class Room {
     this.members = new Set();
   }
 
+  getMembers() {
+    const membersArray = [];
+    for (let member of this.members) {
+      membersArray.push(member.name);
+    }
+    return membersArray;
+  }
+
   /** member joining a room. */
 
   join(member) {
